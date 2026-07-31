@@ -12,7 +12,7 @@ const userController = {
 
   async createUsuario(req, res) {
     try {
-      const { nome } = req.body;
+      const nome = req.body.nome || req.body.name;
       if (!nome) {
         return res.status(400).json({ success: false, error: 'O campo nome é obrigatório.' });
       }
