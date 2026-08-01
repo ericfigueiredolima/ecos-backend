@@ -5,6 +5,7 @@ require('dotenv').config();
 const userRoutes = require('./src/routes/userRoutes');
 const employeeRoutes = require('./src/routes/employeeRoutes');
 const projectRoutes = require('./src/routes/projectRoutes');
+const projectEmployeeRoutes = require('./src/routes/projectEmployeeRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 app.use('/api', userRoutes);
 app.use('/api', employeeRoutes);
 app.use('/api', projectRoutes);
+app.use('/api', projectEmployeeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
