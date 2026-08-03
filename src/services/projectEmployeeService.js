@@ -1,30 +1,41 @@
 const supabase = require('../config/supabaseClient');
 
 const projectEmployeeService = {
-  async listarAssociacoes() {
-    const { data, error } = await supabase
-      .from('project_employees')
-      .select(`
-        id,
-        project_id,
-        employee_id,
-        projects (title),
-        employees (full_name, position)
-      `);
-      
-    if (error) throw new Error(error.message);
-    return data;
-  },
+    // Listar todos os vínculos (ou funcionários por projeto)
+    async getProjectEmployees() {
+        const { data, error } = await supabase
+            .from('project_employees') // Ajuste o nome da tabela intermediária se necessário
+            .select(`
+                *,
+                project:projects(*),
+                employee:employees(*)
+            `);
 
-  async criarAssociacao(project_id, employee_id) {
-    const { data, error } = await supabase
-      .from('project_employees')
-      .insert([{ project_id, employee_id }])
-      .select();
-      
-    if (error) throw new Error(error.message);
-    return data[0];
-  }
+        if (error) throw new Error(error.message);
+        return data;
+    },
+
+    // Vincular funcionário a um projeto
+    async linkEmployeeToProject(project_id, employee_id) {
+        const { data, error } = await supabase
+            .from('project_employees')
+            .insert([{ project_id, employee_id }])
+            .select();
+
+        if (error) throw new Error(error.message);
+        return data[0];
+    },
+
+    // Desvincular funcionário de um projeto
+    async unlinkEmployeeFromProject(project_id, employee_id) {
+        const { error } = await supabase
+            .from('project_employees')
+            .delete()
+            .match({ project_id, employee_id });
+
+        if (error) throw new Error(error.message);
+        return true;
+    }
 };
 
 module.exports = projectEmployeeService;
