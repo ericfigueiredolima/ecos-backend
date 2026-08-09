@@ -12,11 +12,11 @@ const projectController = {
 
   async createProject(req, res) {
     try {
-      const { title, description, status, start_date } = req.body;
+      const { title, description, status, start_date, employee_ids } = req.body;
       if (!title) {
         return res.status(400).json({ success: false, error: 'O campo title é obrigatório.' });
       }
-      const newProject = await projectService.createProject(title, description, status, start_date);
+      const newProject = await projectService.createProject(title, description, status, start_date, employee_ids);
       return res.status(201).json({ success: true, data: newProject });
     } catch (err) {
       return res.status(500).json({ success: false, error: err.message });
@@ -26,9 +26,8 @@ const projectController = {
   async updateProject(req, res) {
     try {
       const { id } = req.params;
-      const { title, description, status, start_date } = req.body;
-      
-      const updatedProject = await projectService.updateProject(id, title, description, status, start_date);
+      const { title, description, status, start_date, employee_ids } = req.body;
+      const updatedProject = await projectService.updateProject(id, title, description, status, start_date, employee_ids);
       
       if (!updatedProject) {
         return res.status(404).json({ success: false, error: 'Projeto não encontrado.' });
