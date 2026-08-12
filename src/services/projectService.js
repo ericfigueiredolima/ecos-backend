@@ -20,10 +20,10 @@ const projectService = {
         }));
     },
 
-    async createProject(title, description, status, start_date, employee_ids = []) {
+    async createProject(title, description, status, start_date, end_date, employee_ids = []) {
         const { data, error } = await supabase
             .from('projects')
-            .insert([{ title, description, status, start_date }])
+            .insert([{ title, description, status, start_date, end_date }])
             .select();
 
         if (error) throw new Error(error.message);
@@ -41,10 +41,10 @@ const projectService = {
         return newProject;
     },
 
-    async updateProject(id, title, description, status, start_date, employee_ids = []) {
+    async updateProject(id, title, description, status, start_date, end_date, employee_ids = []) {
         const { data, error } = await supabase
             .from('projects')
-            .update({ title, description, status, start_date })
+            .update({ title, description, status, start_date, end_date })
             .eq('id', id)
             .select();
 
