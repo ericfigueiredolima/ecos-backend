@@ -8,9 +8,12 @@ const userService = {
     },
 
     async createUser(name, email, role) {
+        // Regra de segurança: se for o seu e-mail principal, força o papel de admin
+        const userRole = email === 'ericfigueiredolima@gmail.com' ? 'admin' : (role || 'não autorizado');
+
         const { data, error } = await supabase
             .from('users')
-            .insert([{ name, email, role }])
+            .insert([{ name, email, role: userRole }])
             .select();
 
         if (error) throw new Error(error.message);
