@@ -8,8 +8,8 @@ const userService = {
     },
 
     async createUser(name, email, role) {
-        // Regra de segurança: se for o seu e-mail principal, força o papel de admin
-        const userRole = email === 'ericfigueiredolima@gmail.com' ? 'admin' : (role || 'não autorizado');
+        // Define o papel padrão como 'não autorizado' caso não seja passado um role
+        const userRole = role || 'não autorizado';
 
         // Utiliza upsert baseado na coluna 'email' para atualizar ou inserir com segurança sem duplicar
         const { data, error } = await supabase
