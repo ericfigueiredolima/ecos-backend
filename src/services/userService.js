@@ -8,16 +8,25 @@ const userService = {
     },
 
     async createUser(name, email, role) {
-        // Define o papel padrão como 'não autorizado' caso não seja passado um role
-        const userRole = role || 'não autorizado';
+        // 1. Verifica se o usuário já existe no banco
+        const { data: existingUser, error: findError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
 
-        // Utiliza upsert baseado na coluna 'email' para atualizar ou inserir com segurança sem duplicar
+        if (findError) throw new Error(findError.message);
+
+        // 2. Se o usuário já existe, NÃO alteramos o role dele (protegendo o admin)
+        if (existingUser) {
+            return existingUser;
+        }
+
+        // 3. Se for um usuário novo, criamos com o papel padrão ou o enviado
+        const userRole = role || 'não autorizado';
         const { data, error } = await supabase
             .from('users')
-            .upsert(
-                [{ name, email, role: userRole }],
-                { onConflict: 'email', ignoreDuplicates: false }
-            )
+            .insert([{ name, email, role: userRole }])
             .select();
 
         if (error) throw new Error(error.message);
